@@ -68,6 +68,9 @@
                   <TextField fx:id="result" text="${viewModel.result}" alignment="CENTER" prefWidth="400.0"/>
                </children>
             </HBox>
+            <HBox>
+              <TextArea fx:id="areaLog" text="${viewModel.logs}" editable="false" prefHeight="200.0" prefWidth="400.0" VBox.vgrow="ALWAYS" />
+            </HBox>
          </children>
         </VBox>
     </children>

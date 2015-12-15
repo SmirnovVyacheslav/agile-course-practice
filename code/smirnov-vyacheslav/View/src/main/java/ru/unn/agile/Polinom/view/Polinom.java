@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import ru.unn.agile.Polinom.viewmodel.PolinomViewModel;
+import ru.unn.agile.Polinom.infrastructure.TxtLogger;
 
 public class Polinom {
     @FXML
@@ -26,6 +27,8 @@ public class Polinom {
     private Button divide;
     @FXML
     void initialize() {
+        viewModel.setLogger(new TxtLogger("./Polinom-TxtLog.log"));
+
         firstPolinom.textProperty().bindBidirectional(viewModel.firstOperandProperty());
         secondPolinom.textProperty().bindBidirectional(viewModel.secondOperandProperty());
 
