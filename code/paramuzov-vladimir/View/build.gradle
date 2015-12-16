@@ -1,5 +1,6 @@
 dependencies {
     compile project(':paramuzov-vladimir-ViewModel')
+    compile project(':paramuzov-vladimir-Infrastructure')
 }
 
 sourceSets {

@@ -12,8 +12,14 @@ public class MergeSortViewModel {
     private String resultArray;
     private SortingOrder sortingOrder;
     private SortingArrayStatus sortingArrayStatus;
+    private IMergeSortLogger logger;
 
-    public MergeSortViewModel() {
+    public MergeSortViewModel(final IMergeSortLogger logger) {
+        if (logger == null) {
+            throw new IllegalArgumentException("Argument is null pointer");
+        }
+        this.logger = logger;
+
         sortButtonEnabled = false;
         sourceArray = "";
         resultArray = "";
@@ -22,6 +28,8 @@ public class MergeSortViewModel {
     }
 
     public void sort() {
+        logger.write(sortButtonPressedLoggerRecord());
+
         Double[] sortingArray = parseSourceArrayToSortingArray();
 
         MergeSort.sort(sortingArray);
@@ -31,6 +39,8 @@ public class MergeSortViewModel {
         }
 
         parseSortingArrayToResultArray(sortingArray);
+
+        logger.write(sourceArraySortedLoggerRecord());
     }
 
     public String getResultArray() {
@@ -54,11 +64,18 @@ public class MergeSortViewModel {
     }
 
     public void setSortingOrder(final SortingOrder sortingOrder) {
-        this.sortingOrder = sortingOrder;
+        if (this.sortingOrder != sortingOrder) {
+            this.sortingOrder = sortingOrder;
+            logger.write(sortingOrderChangedLoggerRecord());
+        }
     }
 
     public String getSortingArrayStatus() {
         return sortingArrayStatus.toString();
+    }
+
+    public IMergeSortLogger getLogger() {
+        return logger;
     }
 
     public enum SortingOrder {
@@ -92,6 +109,23 @@ public class MergeSortViewModel {
         }
 
         private final String status;
+    }
+
+    public enum LogRecords {
+        SORT_BUTTON_PRESSED("Sorting source array: "),
+        SOURCE_ARRAY_SORTED("Result array: "),
+        SORTING_ORDER_CHANGED("Sorting order changed to ");
+
+        LogRecords(final String record) {
+            this.record = record;
+        }
+
+        @Override
+        public String toString() {
+            return record;
+        }
+
+        private String record;
     }
 
     private boolean canParseSourceArray(final String sourceArray) {
@@ -134,5 +168,17 @@ public class MergeSortViewModel {
             resultArray += aSortingArray.toString() + " ";
         }
         resultArray = resultArray.trim();
+    }
+
+    private String sortingOrderChangedLoggerRecord() {
+        return LogRecords.SORTING_ORDER_CHANGED.toString() + sortingOrder.toString();
+    }
+
+    private String sortButtonPressedLoggerRecord() {
+        return LogRecords.SORT_BUTTON_PRESSED.toString() + sourceArray;
+    }
+
+    private String sourceArraySortedLoggerRecord() {
+        return LogRecords.SOURCE_ARRAY_SORTED.toString() + resultArray;
     }
 }

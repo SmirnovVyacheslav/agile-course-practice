@@ -3,16 +3,22 @@ package ru.unn.agile.LeftistHeap.viewmodel;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static ru.unn.agile.LeftistHeap.viewmodel.LeftistHeapRegexMatcher.matches;
+import static ru.unn.agile.LeftistHeap.viewmodel.LeftistHeapViewModel.Operations;
+import static ru.unn.agile.LeftistHeap.viewmodel.LeftistHeapViewModel.Errors;
+import static ru.unn.agile.LeftistHeap.viewmodel.LeftistHeapViewModel.LogMessages;
 
 public class LeftistHeapViewModelTest {
     private LeftistHeapViewModel viewModel;
 
+    public void setViewModel(final LeftistHeapViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
     @Before
     public void setUp() {
-        viewModel = new LeftistHeapViewModel();
+        viewModel = new LeftistHeapViewModel(new FakeLeftistHeapLogger());
     }
 
     @Test
@@ -38,7 +44,7 @@ public class LeftistHeapViewModelTest {
     @Test
     public void whenInsertOneIntegerToHeapContentDisplayed() {
         viewModel.setKeyValue("1");
-        viewModel.setOperation(LeftistHeapViewModel.Operations.INSERT);
+        viewModel.setOperation(Operations.INSERT);
         viewModel.applyOperation();
 
         assertEquals("[1]", viewModel.getHeapContent());
@@ -46,7 +52,7 @@ public class LeftistHeapViewModelTest {
 
     @Test
     public void whenInsertTwoIntegersToHeapContentDisplayed() {
-        viewModel.setOperation(LeftistHeapViewModel.Operations.INSERT);
+        viewModel.setOperation(Operations.INSERT);
         viewModel.setKeyValue("1");
         viewModel.applyOperation();
         viewModel.setKeyValue("2");
@@ -59,7 +65,7 @@ public class LeftistHeapViewModelTest {
     public void whenInputWrongKeyValueErrorDisplayed() {
         viewModel.setKeyValue("afc");
 
-        assertEquals(LeftistHeapViewModel.Errors.FIELD_BAD_FORMAT.getMessage(),
+        assertEquals(Errors.FIELD_BAD_FORMAT.toString(),
                      viewModel.getErrorText());
     }
 
@@ -72,33 +78,33 @@ public class LeftistHeapViewModelTest {
 
     @Test
     public void byDefaultOperationIsInsert() {
-        assertEquals(LeftistHeapViewModel.Operations.INSERT.toString(),
+        assertEquals(Operations.INSERT.toString(),
                      viewModel.getOperation().toString());
     }
 
     @Test
     public void canChangeOperation() {
-        viewModel.setOperation(LeftistHeapViewModel.Operations.DELETE);
+        viewModel.setOperation(Operations.DELETE);
 
-        assertEquals(LeftistHeapViewModel.Operations.DELETE, viewModel.getOperation());
+        assertEquals(Operations.DELETE, viewModel.getOperation());
     }
 
     @Test
     public void whenTryingToDeleteNotExistingElementErrorDisplayed() {
         viewModel.setKeyValue("1");
-        viewModel.setOperation(LeftistHeapViewModel.Operations.DELETE);
+        viewModel.setOperation(Operations.DELETE);
         viewModel.applyOperation();
 
-        assertEquals(LeftistHeapViewModel.Errors.VALUE_TO_DELETE_NOT_FOUND.getMessage(),
+        assertEquals(Errors.VALUE_TO_DELETE_NOT_FOUND.toString(),
                      viewModel.getErrorText());
     }
 
     @Test
     public void canDeleteExistingElementFromHeap() {
-        viewModel.setOperation(LeftistHeapViewModel.Operations.INSERT);
+        viewModel.setOperation(Operations.INSERT);
         viewModel.setKeyValue("1");
         viewModel.applyOperation();
-        viewModel.setOperation(LeftistHeapViewModel.Operations.DELETE);
+        viewModel.setOperation(Operations.DELETE);
         viewModel.applyOperation();
 
         assertEquals("[]", viewModel.getHeapContent());
@@ -110,5 +116,82 @@ public class LeftistHeapViewModelTest {
         viewModel.setKeyValue("1");
 
         assertEquals("", viewModel.getErrorText());
+    }
+
+    @Test
+    public void canCreateLeftistHeapViewModelWithLogger() {
+        assertNotNull(viewModel);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void canNotCreateLeftistHeapViewModelWithNullLogger() {
+        new LeftistHeapViewModel(null);
+    }
+
+    @Test
+    public void byDefaultLogIsEmpty() {
+        assertEquals(0, viewModel.getLogger().getLog().size());
+    }
+
+    @Test
+    public void isEditingKeyValueFieldAddNewMessageToLog() {
+        viewModel.setKeyValue("10");
+
+        viewModel.valueFieldFocusLost();
+
+        assertEquals(1, viewModel.getLogger().getLog().size());
+    }
+
+    @Test
+    public void isLogContainProperMessageAfterKeyValueFieldEdited() {
+        viewModel.setKeyValue("-10");
+
+        viewModel.valueFieldFocusLost();
+        String logMessage = viewModel.getLogger().getMessage(0);
+
+        assertThat(logMessage, matches(ILeftistHeapLogger.DATE_REGEX
+                                        + LogMessages.KEY_VALUE_FIELD_CHANGED.toString()
+                                        + LeftistHeapViewModel.KEY_VALUE_REGEX));
+    }
+
+    @Test
+    public void isPressingApplyOperationButtonAddNewMessageToLog() {
+        viewModel.setKeyValue("10");
+
+        viewModel.applyOperation();
+
+        assertEquals(1, viewModel.getLogger().getLog().size());
+    }
+
+    @Test
+    public void isLogContainProperMessageAfterApplyInsertOperation() {
+        viewModel.setKeyValue("10");
+
+        viewModel.applyOperation();
+        String logMessage = viewModel.getLogger().getMessage(0);
+
+        assertThat(logMessage, matches(ILeftistHeapLogger.DATE_REGEX
+                                        + LogMessages.BUTTON_PRESSED.toString()
+                                        + "Operation: "
+                                        + Operations.INSERT.toString()
+                                        + "; Value: "
+                                        + LeftistHeapViewModel.KEY_VALUE_REGEX));
+    }
+
+    @Test
+    public void isChangingOperationAddNewMessageToLog() {
+        viewModel.setOperation(Operations.DELETE);
+
+        assertEquals(1, viewModel.getLogger().getLog().size());
+    }
+
+    @Test
+    public void isLogContainProperMessageAfterChangeOperationToDelete() {
+        viewModel.setOperation(Operations.DELETE);
+        String logMessage = viewModel.getLogger().getMessage(0);
+
+        assertThat(logMessage, matches(ILeftistHeapLogger.DATE_REGEX
+                                        + LogMessages.OPERATION_CHANGED.toString()
+                                        + "`" + Operations.DELETE.toString() + "`"));
     }
 }

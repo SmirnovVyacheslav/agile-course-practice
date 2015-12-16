@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import ru.unn.agile.QuadraticEquationSolver.viewmodel.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.unn.agile.QuadraticEquationSolver.view.EquationsSolver">
+   <fx:define>
+      <ViewModel fx:id="viewModel" />
+   </fx:define>
+   <children>
+      <TextField fx:id="textFieldCoeffA" layoutX="43.0" layoutY="26.0" prefHeight="25.0" prefWidth="66.0" />
+      <TextField fx:id="textFieldCoeffB" layoutX="140.0" layoutY="26.0" prefHeight="25.0" prefWidth="66.0" />
+      <TextField fx:id="textFieldCoeffC" layoutX="236.0" layoutY="26.0" prefHeight="25.0" prefWidth="66.0" />
+      <Label layoutX="28.0" layoutY="30.0" text="a" />
+      <Label layoutX="119.0" layoutY="30.0" text="b" />
+      <Label layoutX="216.0" layoutY="30.0" text="c" />
+      <Label layoutX="24.0" layoutY="63.0" text="Solution:" />
+      <Label layoutX="24.0" layoutY="83.0" text="Status:" />
+      <Label fx:id="labelResult" layoutX="75.0" layoutY="63.0" text="${viewModel.result}"/>
+      <Label fx:id="labelStatus" layoutX="75.0" layoutY="83.0" text="${viewModel.status}"/>
+      <Button fx:id="buttonSolveEquation" defaultButton="true" disable="${viewModel.solvingEquationDisabled}" layoutX="328.0" layoutY="26.0" mnemonicParsing="false" text="Solve"/>
+   </children>
+</AnchorPane>

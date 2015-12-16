@@ -1,5 +1,6 @@
 dependencies {
     compile project(':yusipov-igor-ViewModel')
+    compile project(':yusipov-igor-Infrastructure')
 }
 
 sourceSets {

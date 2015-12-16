@@ -1,5 +1,6 @@
 package ru.unn.agile.MergeSort.View;
 
+import ru.unn.agile.MergeSort.Infrastructure.MergeSortFileLogger;
 import ru.unn.agile.MergeSort.ViewModel.MergeSortViewModel;
 
 import javax.swing.*;
@@ -7,6 +8,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public final class MergeSortView {
     private final MergeSortViewModel viewModel;
@@ -16,10 +18,14 @@ public final class MergeSortView {
     private JButton sortButton;
     private JTextField statusTextField;
     private JComboBox<MergeSortViewModel.SortingOrder> sortingOrderComboBox;
+    private JList<String> logRecordsList;
+    private static final String LOG_OUTPUT_FILE_NAME = "./MergeSortViewLog.log";
 
     public static void main(final String[] args) {
         JFrame frame = new JFrame("MergeSortView");
-        frame.setContentPane(new MergeSortView(new MergeSortViewModel()).mainPanel);
+
+        MergeSortFileLogger fileLogger = new MergeSortFileLogger(LOG_OUTPUT_FILE_NAME);
+        frame.setContentPane(new MergeSortView(new MergeSortViewModel(fileLogger)).mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -29,6 +35,13 @@ public final class MergeSortView {
         this.viewModel = viewModel;
 
         loadListOfSortingOrders();
+        sortingOrderComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                mergeSortViewBackBind();
+                mergeSortViewBind();
+            }
+        });
 
         sortButton.addActionListener(new ActionListener() {
             @Override
@@ -73,6 +86,10 @@ public final class MergeSortView {
         statusTextField.setText(viewModel.getSortingArrayStatus());
 
         sortButton.setEnabled(viewModel.isSortButtonEnabled());
+
+        List<String> recordsList = viewModel.getLogger().getRecordsList();
+        logRecordsList.setListData(recordsList.toArray(new String[recordsList.size()]));
+        logRecordsList.ensureIndexIsVisible(recordsList.size() - 1);
     }
 
     private void loadListOfSortingOrders() {

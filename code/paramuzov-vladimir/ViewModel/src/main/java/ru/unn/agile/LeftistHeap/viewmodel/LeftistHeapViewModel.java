@@ -16,7 +16,8 @@ public class LeftistHeapViewModel {
             this.errorMessage = errorMessage;
         }
 
-        public String getMessage() {
+        @Override
+        public String toString() {
             return errorMessage;
         }
     }
@@ -37,15 +38,46 @@ public class LeftistHeapViewModel {
         }
     }
 
+    public enum LogMessages {
+        KEY_VALUE_FIELD_CHANGED("Key value changed to "),
+        OPERATION_CHANGED("Operation was changed to "),
+        BUTTON_PRESSED("ApplyButton was pressed. ");
+
+        private String logMessage;
+
+        LogMessages(final String logMessage) {
+            this.logMessage = logMessage;
+        }
+
+        @Override
+        public String toString() {
+            return logMessage;
+        }
+    }
+    public static final String KEY_VALUE_REGEX = "[+-]?\\d+";
+
     private final LeftistHeap<Integer> heap;
     private boolean applyButtonEnabled = false;
     private String keyValue;
     private String heapContent = "[]";
     private String errorText = "";
     private Operations operation = Operations.INSERT;
+    private ILeftistHeapLogger logger;
 
-    public LeftistHeapViewModel() {
+    public LeftistHeapViewModel(final ILeftistHeapLogger logger) {
+        if (logger == null) {
+            throw new NullPointerException("Logger is null");
+        }
+
         heap = new LeftistHeap<>();
+        this.logger = logger;
+    }
+
+    public void valueFieldFocusLost() {
+        if (keyValue != null) {
+            logger.log(LogMessages.KEY_VALUE_FIELD_CHANGED.toString()
+                    + keyValue);
+        }
     }
 
     public boolean isApplyButtonEnabled() {
@@ -59,8 +91,8 @@ public class LeftistHeapViewModel {
             return;
         }
 
-        if (!keyValue.matches("\\d+|-\\d+")) {
-            errorText = Errors.FIELD_BAD_FORMAT.getMessage();
+        if (!keyValue.matches(KEY_VALUE_REGEX)) {
+            errorText = Errors.FIELD_BAD_FORMAT.toString();
             applyButtonEnabled = false;
             return;
         }
@@ -71,7 +103,11 @@ public class LeftistHeapViewModel {
     }
 
     public void setOperation(final Operations operation) {
-        this.operation = operation;
+        if (this.operation != operation) {
+            this.operation = operation;
+            logger.log(LogMessages.OPERATION_CHANGED.toString()
+                    + "`" + operation.toString() + "`");
+        }
     }
 
     public Operations getOperation() {
@@ -79,6 +115,8 @@ public class LeftistHeapViewModel {
     }
 
     public void applyOperation() {
+        logger.log(getApplyOperationLogMessage());
+
         if (operation == Operations.INSERT) {
             insertElement();
         } else {
@@ -94,6 +132,10 @@ public class LeftistHeapViewModel {
         return errorText;
     }
 
+    public ILeftistHeapLogger getLogger() {
+        return logger;
+    }
+
     private void insertElement() {
             heap.insert(Integer.parseInt(keyValue));
             Object[] content = heap.toSortedArray();
@@ -105,12 +147,18 @@ public class LeftistHeapViewModel {
         try {
             nodeToDelete = heap.findNodeByKey(Integer.parseInt(keyValue));
         } catch (NullPointerException e) {
-            errorText =  Errors.VALUE_TO_DELETE_NOT_FOUND.getMessage();
+            errorText =  Errors.VALUE_TO_DELETE_NOT_FOUND.toString();
             return;
         }
         errorText = "";
         heap.delete(nodeToDelete);
         Object[] content = heap.toSortedArray();
         heapContent = Arrays.toString(content);
+    }
+
+    private String getApplyOperationLogMessage() {
+        return LogMessages.BUTTON_PRESSED.toString()
+               + "Operation: " + operation.toString()
+               + "; Value: " + keyValue;
     }
 }

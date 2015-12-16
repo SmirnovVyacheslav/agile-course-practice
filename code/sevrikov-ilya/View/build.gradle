@@ -1,5 +1,6 @@
 dependencies {
     compile project(':sevrikov-ilya-ViewModel')
+    compile project(':sevrikov-ilya-Infrastructure')
 }
 
 sourceSets {

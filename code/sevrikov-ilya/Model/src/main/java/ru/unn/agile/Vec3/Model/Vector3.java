@@ -1,5 +1,9 @@
 package ru.unn.agile.Vec3.Model;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Vector3 {
     private double x;
     private double y;
@@ -71,10 +75,13 @@ public class Vector3 {
 
     @Override
     public String toString() {
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
+        formatter.applyPattern("###.#####");
+
         return "("
-                + Double.toString(x()) + ", "
-                + Double.toString(y()) + ", "
-                + Double.toString(z()) + ")";
+                + formatter.format(x()) + ", "
+                + formatter.format(y()) + ", "
+                + formatter.format(z()) + ")";
     }
 
     public boolean equals(final double x,
@@ -114,7 +121,11 @@ public class Vector3 {
                                      z * vec.x() - x * vec.z(),
                                      x * vec.y() - y * vec.x());
 
-        vector.normalize();
+        try {
+            vector.normalize();
+        } catch (Throwable t) {
+            vector = new Vector3(Double.NaN, Double.NaN, Double.NaN);
+        }
 
         return vector;
     }

@@ -5,7 +5,7 @@ public class TemperatureConverter {
     private final double base;
     private final double scaling;
 
-    private static final double PHYSICAL_LIMIT = -273.15;
+    public static final double PHYSICAL_LIMIT = -273.15;
 
     public TemperatureConverter(final TemperatureScaleName scaleName) {
         base = scaleName.getBase();

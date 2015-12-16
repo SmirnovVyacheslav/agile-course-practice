@@ -13,7 +13,8 @@ public class ViewModelTests {
 
     @Before
     public void setUp() {
-        viewModel = new ViewModel();
+        TemperatureConverterFakeLogger logger = new TemperatureConverterFakeLogger();
+        viewModel = new ViewModel(logger);
     }
 
     @After

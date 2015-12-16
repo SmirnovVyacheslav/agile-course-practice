@@ -98,6 +98,8 @@ include "code/gorokhov-dmitriy/ViewModel"
 project(":code/gorokhov-dmitriy/ViewModel").name = "gorokhov-dmitriy-ViewModel"
 include "code/gorokhov-dmitriy/View"
 project(":code/gorokhov-dmitriy/View").name = "gorokhov-dmitriy-View"
+include "code/gorokhov-dmitriy/Infrastructure"
+project(":code/gorokhov-dmitriy/Infrastructure").name = "gorokhov-dmitriy-Infrastructure"
 
 // Kajnov Oleg
 
@@ -196,6 +198,8 @@ include "code/paramuzov-vladimir/ViewModel"
 project(":code/paramuzov-vladimir/ViewModel").name = "paramuzov-vladimir-ViewModel"
 include "code/paramuzov-vladimir/View"
 project(":code/paramuzov-vladimir/View").name = "paramuzov-vladimir-View"
+include "code/paramuzov-vladimir/Infrastructure"
+project(":code/paramuzov-vladimir/Infrastructure").name = "paramuzov-vladimir-Infrastructure"
 // Plankina Elena
 
 // Plankina Elena
@@ -217,6 +221,8 @@ include "code/sevrikov-ilya/View"
 project(":code/sevrikov-ilya/View").name = "sevrikov-ilya-View"
 include "code/sevrikov-ilya/ViewModel"
 project(":code/sevrikov-ilya/ViewModel").name = "sevrikov-ilya-ViewModel"
+include "code/sevrikov-ilya/Infrastructure"
+project(":code/sevrikov-ilya/Infrastructure").name = "sevrikov-ilya-Infrastructure"
 
 // Shulgina Yana
 include "code/shulgina-yana/Model"
@@ -225,9 +231,16 @@ include "code/shulgina-yana/View"
 project(":code/shulgina-yana/View").name = "shulgina-yana-View"
 include "code/shulgina-yana/ViewModel"
 project(":code/shulgina-yana/ViewModel").name = "shulgina-yana-ViewModel"
-// Smirnov Aleksandr
-include "code/smirnov-alexandr"
-project(":code/smirnov-alexandr").name = "smirnov-alexandr-lab1-Model"
+
+
+// Smirnov Alexandr
+include "code/smirnov-alexandr/Model"
+project(":code/smirnov-alexandr/Model").name = "smirnov-alexandr-Model"
+include "code/smirnov-alexandr/View"
+project(":code/smirnov-alexandr/View").name = "smirnov-alexandr-View"
+include "code/smirnov-alexandr/ViewModel"
+project(":code/smirnov-alexandr/ViewModel").name = "smirnov-alexandr-ViewModel"
+
 // Smirnov Mixail
 include "code/smirnov-michael/Model"
 project(":code/smirnov-michael/Model").name = "smirnov-michael-Model"
@@ -280,6 +293,8 @@ include "code/yusipov-igor/View"
 project(":code/yusipov-igor/View").name = "yusipov-igor-View"
 include "code/yusipov-igor/ViewModel"
 project(":code/yusipov-igor/ViewModel").name = "yusipov-igor-ViewModel"
+include "code/yusipov-igor/Infrastructure"
+project(":code/yusipov-igor/Infrastructure").name = "yusipov-igor-Infrastructure"
 
 // Zajdullova Alina
 // Zhbanova Anna

@@ -79,6 +79,18 @@ public class Vec3Test {
         assert anAxisZ.equals(0.0, 0.0, 1.0);
     }
 
+    @Test
+    public void crossProductOfCoplanarVectorsReturnNaNVector() {
+        firstVec = new Vector3(1.0, 0.0, 0.0);
+        secondVec = new Vector3(0.1, 0.0, 0.0);
+
+        final Vector3 vector = firstVec.cross(secondVec);
+
+        assertTrue(Double.isNaN(vector.x()));
+        assertTrue(Double.isNaN(vector.y()));
+        assertTrue(Double.isNaN(vector.z()));
+    }
+
     @Test (expected = NullPointerException.class)
     public void isCorrectEqualsNotNullObjectWithNullObject() {
         firstVec = new Vector3();

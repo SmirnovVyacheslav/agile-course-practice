@@ -1,10 +1,14 @@
 package ru.unn.agile.Vec3.View;
 
 import ru.unn.agile.Vec3.ViewModel.Vector3ViewModel;
+import ru.unn.agile.Vec3.ViewModel.Vector3Operation;
+import ru.unn.agile.Vec3.Infrastructure.Vector3TxtLogger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public final class Vector3Viewer {
     private JPanel mainPanel;
@@ -22,8 +26,12 @@ public final class Vector3Viewer {
     private JLabel lblCoordZ1;
     private JTextField txtResult;
     private JLabel lblResult;
-    private JComboBox<ActionList> cmbActionList;
+    private JComboBox<Vector3Operation> cmbActionList;
     private JButton btnCalculate;
+    private JTextField txtStatus;
+    private JLabel lblStatus;
+    private JCheckBox cbShowLog;
+    private JList<String> listLog;
 
     private Vector3ViewModel viewModel;
 
@@ -42,7 +50,10 @@ public final class Vector3Viewer {
     public static void main(final String[] args) {
         JFrame frame = new JFrame("Vector3dViewer");
 
-        frame.setContentPane(new Vector3Viewer(new Vector3ViewModel()).mainPanel);
+        Vector3TxtLogger logger = new Vector3TxtLogger("./view_log.txt");
+        Vector3ViewModel viewModel = new Vector3ViewModel(logger);
+
+        frame.setContentPane(new Vector3Viewer(viewModel).mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -54,35 +65,22 @@ public final class Vector3Viewer {
             public void actionPerformed(final ActionEvent e) {
                 backBind();
 
-                switch ((ActionList) cmbActionList.getSelectedItem()) {
-                    case GET_NORM_FIRST_VECTOR:     viewModel.getNormOfFirstVector();
-                                                    break;
-
-                    case GET_NORM_SECOND_VECTOR:    viewModel.getNormOfSecondVector();
-                                                    break;
-
-                    case NORMAlIZE_FIRST_VECTOR:    viewModel.normalizeFirstVector();
-                                                    break;
-
-                    case NORMALIZE_SECOND_VECTOR:   viewModel.normalizeSecondVector();
-                                                    break;
-
-                    case CALCULATE_DOT_PRODUCT:     viewModel.getDotProduct();
-                                                    break;
-
-                    case CALCULATE_CROSS_PRODUCT:   viewModel.getCrossProduct();
-                                                    break;
-
-                    default: break;
-                }
+                viewModel.compute((Vector3Operation) cmbActionList.getSelectedItem());
 
                 bind();
+            }
+        });
+
+        cbShowLog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                listLog.setVisible(cbShowLog.isSelected());
             }
         });
     }
 
     private void loadActionList() {
-        ActionList[] actions = ActionList.values();
+        Vector3Operation[] actions = Vector3Operation.values();
         cmbActionList.setModel(new JComboBox<>(actions).getModel());
     }
 
@@ -106,5 +104,15 @@ public final class Vector3Viewer {
         txtCoordZ1.setText(viewModel.getCoordZ1());
 
         txtResult.setText(viewModel.getResultOfLastAction());
+        txtStatus.setText(viewModel.getStatus());
+
+        bindLog();
+    }
+
+    private void bindLog() {
+        ArrayList<String> log = new ArrayList<>(viewModel.getLog());
+        Collections.reverse(log);
+        String[] messages = log.toArray(new String[log.size()]);
+        listLog.setListData(messages);
     }
 }
