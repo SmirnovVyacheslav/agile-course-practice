@@ -19,8 +19,8 @@ public class TxtLogger implements IPolinomLogger {
         BufferedWriter logWriter = null;
         try {
             logWriter = new BufferedWriter(new FileWriter(logFileName));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         writer = logWriter;
     }
@@ -41,15 +41,15 @@ public class TxtLogger implements IPolinomLogger {
         BufferedReader reader;
         ArrayList<String> log = new ArrayList<String>();
         try {
-            reader = new BufferedReader(new FileReader(logFileName));
-            String line = reader.readLine();
+            logReader = new BufferedReader(new FileReader(logFileName));
+            String logMessage = logReader.readLine();
 
-            while (line != null) {
-                log.add(line);
-                line = reader.readLine();
+            while (logMessage != null) {
+                log.add(logMessage);
+                logMessage = logReader.readLine();
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
         }
 
         return log;
