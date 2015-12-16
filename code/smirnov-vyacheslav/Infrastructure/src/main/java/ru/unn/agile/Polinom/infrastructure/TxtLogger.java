@@ -38,7 +38,7 @@ public class TxtLogger implements IPolinomLogger {
 
     @Override
     public List<String> getLog() {
-        BufferedReader reader;
+        BufferedReader logReader;
         ArrayList<String> log = new ArrayList<String>();
         try {
             logReader = new BufferedReader(new FileReader(logFileName));
