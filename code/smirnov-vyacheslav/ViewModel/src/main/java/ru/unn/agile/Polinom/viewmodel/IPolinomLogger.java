@@ -2,7 +2,7 @@ package ru.unn.agile.Polinom.viewmodel;
 
 import java.util.List;
 
-public interface ILogger {
+public interface IPolinomLogger {
     void log(final String s);
 
     List<String> getLog();

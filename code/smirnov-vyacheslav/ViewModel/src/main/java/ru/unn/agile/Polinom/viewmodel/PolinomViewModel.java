@@ -9,40 +9,30 @@ import ru.unn.agile.Polinom.Model.Polinom;
 
 public class PolinomViewModel {
     public enum Operation {
-        ADD("ADD") {
+        ADD {
             public Polinom apply(final Polinom first, final Polinom second) {
                 first.add(second);
                 return first;
             }
         },
-        SUBSTRACT("SUBSTRACT") {
+        SUBSTRACT {
             public Polinom apply(final Polinom first, final Polinom second) {
                 first.subtract(second);
                 return first;
             }
         },
-        MULTIPLY("MULTIPLY") {
+        MULTIPLY {
             public Polinom apply(final Polinom first, final Polinom second) {
                 first.multiply(second);
                 return first;
             }
         },
-        DIVIDE("DIVIDE") {
+        DIVIDE {
             public Polinom apply(final Polinom first, final Polinom second) {
                 first.divide(second);
                 return first;
             }
         };
-
-        private String operationName;
-
-        Operation(final String operationName) {
-            this.operationName = operationName;
-        }
-
-        public String getOperationName() {
-            return operationName;
-        }
 
         public abstract Polinom apply(final Polinom first, final Polinom second);
     }
@@ -71,9 +61,9 @@ public class PolinomViewModel {
     private final StringProperty result = new SimpleStringProperty();
     private final StringProperty logs = new SimpleStringProperty();
 
-    private ILogger logger;
+    private IPolinomLogger logger;
 
-    public void setLogger(final ILogger logger) {
+    public void setLogger(final IPolinomLogger logger) {
         if (logger == null) {
             throw new IllegalArgumentException(Errors.NULL_LOGGER.getMessage());
         }
@@ -84,7 +74,7 @@ public class PolinomViewModel {
         init();
     }
 
-    public PolinomViewModel(final ILogger logger) {
+    public PolinomViewModel(final IPolinomLogger logger) {
         setLogger(logger);
         init();
     }
@@ -139,9 +129,11 @@ public class PolinomViewModel {
     public final List<String> getLog() {
         return logger.getLog();
     }
+
     public StringProperty logsProperty() {
         return logs;
     }
+
     public final String getLogs() {
         return logs.get();
     }
@@ -149,12 +141,15 @@ public class PolinomViewModel {
     public StringProperty firstOperandProperty() {
         return firstOperand;
     }
+
     public StringProperty secondOperandProperty() {
         return secondOperand;
     }
+
     public StringProperty resultProperty() {
         return result;
     }
+
     public final String getResult() {
         return result.get();
     }
@@ -204,7 +199,7 @@ public class PolinomViewModel {
     }
 
     private void addMessageToLog(final Operation operation, final Errors exception) {
-        String logMessage = "Performed " + operation.getOperationName() + " operation. "
+        String logMessage = "Performed " + operation.toString() + " operation. "
         + "Arguments: [" + firstOperand.get() + "]; [" + secondOperand.get() + "] ";
         if (exception == null) {
             logMessage += "Result: Success.";

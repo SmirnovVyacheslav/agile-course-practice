@@ -3,7 +3,7 @@ package ru.unn.agile.Polinom.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FakeLogger implements ILogger {
+public class FakePolinomLogger implements IPolinomLogger {
     private final ArrayList<String> log = new ArrayList<>();
 
     @Override

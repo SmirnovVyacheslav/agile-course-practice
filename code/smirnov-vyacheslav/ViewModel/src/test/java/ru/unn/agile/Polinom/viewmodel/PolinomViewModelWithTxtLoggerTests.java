@@ -9,17 +9,13 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class PolinomViewModelWithTxtLoggerTests {
-    private PolinomViewModel viewModel;
-
     public void setExternalPolinomlViewModel(final PolinomViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
     @Before
     public void setUp() {
-        if (viewModel == null) {
-            viewModel = new PolinomViewModel(new FakeLogger());
-        }
+        viewModel = new PolinomViewModel(new FakePolinomLogger());
     }
 
     @After
@@ -27,17 +23,13 @@ public class PolinomViewModelWithTxtLoggerTests {
         viewModel = null;
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void cannotSetNullLogger() {
-        try {
-            new PolinomViewModel(null);
-        } catch (IllegalArgumentException exception) {
-            assertEquals(PolinomViewModel.Errors.NULL_LOGGER.getMessage(), exception.getMessage());
-        }
+        new PolinomViewModel(null);
     }
 
     @Test
-    public void createdLogIsEmpty() {
+    public void createdLogIsEmptyByDefault() {
         List<String> log = viewModel.getLog();
 
         assertTrue(log.isEmpty());
@@ -97,10 +89,8 @@ public class PolinomViewModelWithTxtLoggerTests {
         viewModel.operation(PolinomViewModel.Operation.ADD);
 
         assertTrue(viewModel.getLog().get(0).matches(".*Arguments: \\["
-            + viewModel.firstOperandProperty().get().
-            replace(".", "\\.").replace("+", "\\+").replace("^", "\\^") + "\\]; \\["
-            + viewModel.secondOperandProperty().get().
-            replace(".", "\\.").replace("+", "\\+").replace("^", "\\^") + "\\].*"));
+            + escapingOperandSpecialCharacters(viewModel.firstOperandProperty().get()) + "\\]; \\["
+            + escapingOperandSpecialCharacters(viewModel.secondOperandProperty().get()) + "\\].*"));
     }
 
     @Test
@@ -171,4 +161,10 @@ public class PolinomViewModelWithTxtLoggerTests {
         viewModel.firstOperandProperty().set("1 + 2x^2");
         viewModel.secondOperandProperty().set("2 - 3x^1");
     }
+
+    private String escapingOperandSpecialCharacters(final String operand) {
+        return operand.replace(".", "\\.").replace("+", "\\+").replace("^", "\\^");
+    }
+
+    private PolinomViewModel viewModel;
 }

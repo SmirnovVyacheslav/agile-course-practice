@@ -1,6 +1,6 @@
 package ru.unn.agile.Polinom.infrastructure;
 
-import ru.unn.agile.Polinom.viewmodel.ILogger;
+import ru.unn.agile.Polinom.viewmodel.IPolinomLogger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,17 +12,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class TxtLogger implements ILogger {
-    private static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
-    private final BufferedWriter writer;
-    private final String logFileName;
-
-    private static String getCurrentDate() {
-        Calendar date = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_NOW, Locale.ENGLISH);
-        return dateFormat.format(date.getTime());
-    }
-
+public class TxtLogger implements IPolinomLogger {
     public TxtLogger(final String logFileName) {
         this.logFileName = logFileName;
 
@@ -64,4 +54,14 @@ public class TxtLogger implements ILogger {
 
         return log;
     }
+
+    private static String getCurrentDate() {
+        Calendar date = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_NOW, Locale.ENGLISH);
+        return dateFormat.format(date.getTime());
+    }
+
+    private static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+    private final BufferedWriter writer;
+    private final String logFileName;
 }
