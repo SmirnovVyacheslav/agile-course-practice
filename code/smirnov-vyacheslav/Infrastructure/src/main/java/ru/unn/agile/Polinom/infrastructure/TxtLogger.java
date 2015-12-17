@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class TxtLogger implements IPolinomLogger {
+    private static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+    private final BufferedWriter writer;
+    private final String logFileName;
+
     public TxtLogger(final String logFileName) {
         this.logFileName = logFileName;
 
@@ -60,8 +64,4 @@ public class TxtLogger implements IPolinomLogger {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_NOW, Locale.ENGLISH);
         return dateFormat.format(date.getTime());
     }
-
-    private static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
-    private final BufferedWriter writer;
-    private final String logFileName;
 }
